@@ -1,21 +1,24 @@
+import angular from 'angular';
+
 function homeRouting($stateProvider, $urlRouterProvider) {
 	$urlRouterProvider.otherwise("/home");
-	console.log('as');
-
 	$stateProvider
 		.state("home", {
 			url: "/home",
-			template: require('./home.html'),
+			templateProvider: ($q) => {
+				return $q((resolve) => {
+					require.ensure([], () => resolve(require('./home.html')));
+				});
+			},
 			controller: 'homeController',
 			resolve: {
-				loadController: ($q, $ocLazyLoad) => {
-
+				deps: ($q, $ocLazyLoad) => {
 					return $q((resolve) => {
 						require.ensure([], () => {
-							// load whole module
-							let module = require('./home.controller');
-							$ocLazyLoad.load({ name: module.name });
-							resolve(module);
+							import('./home.controller').then(module => {
+								$ocLazyLoad.load({ name: module.default });
+								resolve(module);
+							})
 						});
 					});
 				}
@@ -23,16 +26,20 @@ function homeRouting($stateProvider, $urlRouterProvider) {
 		})
 		.state("home.about", {
 			url: "/about",
-			template: require('./about/home.about.html'),
+			templateProvider: ($q) => {
+				return $q((resolve) => {
+					require.ensure([], () => resolve(require('./about/home.about.html')));
+				});
+			},
 			controller: 'homeAboutController',
 			resolve: {
-				loadController: ($q, $ocLazyLoad) => {
-
+				deps: ($q, $ocLazyLoad) => {
 					return $q((resolve) => {
 						require.ensure([], () => {
-							let module = require('./about/home.about.controller');
-							$ocLazyLoad.load({ name: module.name });
-							resolve(module);
+							import('./about/home.about.controller').then(module => {
+								$ocLazyLoad.load({ name: module.default });
+								resolve(module);
+							})
 						});
 					});
 				}
@@ -41,4 +48,4 @@ function homeRouting($stateProvider, $urlRouterProvider) {
 }
 
 
-module.exports = angular.module("home.routing", []).config(homeRouting)
+export default angular.module("home.routing", []).config(homeRouting)

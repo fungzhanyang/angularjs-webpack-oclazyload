@@ -1,8 +1,9 @@
 
-require('./home.module')
+import homeMoudle from './home.module'
 
-module.exports = angular.module('home').controller('homeController', function homeController($scope) {
+export default angular.module(homeMoudle.name).controller('homeController', function homeController($scope) {
 	$scope.title ='home';
+	console.log('home ctrl');
 	
-})
+}).name
 

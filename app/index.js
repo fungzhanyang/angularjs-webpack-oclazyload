@@ -1,7 +1,13 @@
 
+import angular from 'angular';
+import uiRouter from 'angular-ui-router';
+import oclazyload from 'oclazyload';
+import homeRouting from './pages/home/home.routing';
 
-module.exports = require('angular').module("app", [
-	require('angular-ui-router').default,
-	require('oclazyload'),
-	require('./pages/home/home.routing').name
+
+
+export const appModule = angular.module("app", [
+	uiRouter,
+	oclazyload,
+	homeRouting.name
 ])
